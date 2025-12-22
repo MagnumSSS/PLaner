@@ -371,32 +371,54 @@ void clear_stdin(){
 }
 
 void parser(struct task** root ,char** tokens, size_t count){
-	if(count == 2 && strcmp(tokens[0], "добавить") == 0){
-		element_add_back_next(root, tokens[1]);
-		return;
+	int16_t in_index = -1;
+	for(size_t i = 0; i < count; i++){
+		if(strcmp(tokens[i], "в") == 0){
+			in_index = i;
+			break;
+		}
 	}
-	else if(count == 4 && strcmp(tokens[0], "добавить") == 0 && strcmp(tokens[2], "в") == 0){
-		add_child_to_parent(*root, tokens[3], tokens[1]);
-		return;
+	if(strcmp(tokens[0], "добавить") == 0 && in_index != -1){
+		if(in_index > 1 && in_index < count-1){
+			const char* parent = tokens[count-1];
+			for(size_t i = 1; i < in_index; i++){
+				add_child_to_parent(*root, parent, tokens[i]);
+			}
+		}
 	}
-	else if(count == 4 && strcmp(tokens[0], "удалить") == 0 && strcmp(tokens[2], "в") == 0){
-		remove_child_task(*root, tokens[3], tokens[1]);
-		return;
+	else if(strcmp(tokens[0], "добавить") == 0){
+		for(size_t i = 1; i < count; i++){
+			element_add_back_next(root, tokens[i]);
+		}
 	}
-	else if (count == 2 && strcmp(tokens[0], "удалить") == 0) {
-    size_t index = 0;
-    struct task* current = *root;
-    while (current) {
-        if (strcmp(current->title, tokens[1]) == 0) {
-            remove_from_list(root, index);
-            return;
-        }
-        current = current->next;
-        index++;
-    }
-    printf("Корневой элемент '%s' не найден.\n", tokens[1]);
-  }
-	else if(strcmp(tokens[0], "показать") == 0 && strcmp(tokens[1], "план") == 0){
+	else if(strcmp(tokens[0], "удалить") == 0 && in_index != -1){
+		if(in_index > 1 && in_index < count-1){
+			const char* parent = tokens[count-1];
+			for(size_t i = 1; i < in_index; i++){
+				remove_child_task(*root, parent, tokens[i]);
+			}
+		}
+	}
+	else if(strcmp(tokens[0], "удалить") == 0){
+		for(size_t i = 1; i < count; i++){
+		  size_t index = 0;
+			struct task* current = *root;
+			bool flag = false;
+			while (current) {
+				  if (strcmp(current->title, tokens[i]) == 0) {
+					    remove_from_list(root, index);
+							flag = true;
+						  break;
+				  }
+					current = current->next;
+					index++;
+			}
+			if(!flag){
+				printf("Корневой элемент '%s' не найден.\n", tokens[1]);
+			}
+		}
+	}
+	if(strcmp(tokens[0], "показать") == 0 && strcmp(tokens[1], "план") == 0){
 		print_tree(*root, (size_t)0);		
 		return;
 	}
