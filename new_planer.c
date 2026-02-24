@@ -378,7 +378,7 @@ void parser(struct task** root ,char** tokens, size_t count){
 			break;
 		}
 	}
-	if(strcmp(tokens[0], "добавить") == 0 && in_index != -1){
+	if((strcmp(tokens[0], "добавить") == 0 || strcmp(tokens[0], "add") == 0) && in_index != -1){
 		if(in_index > 1 && in_index < count-1){
 			const char* parent = tokens[count-1];
 			for(size_t i = 1; i < in_index; i++){
@@ -386,12 +386,12 @@ void parser(struct task** root ,char** tokens, size_t count){
 			}
 		}
 	}
-	else if(strcmp(tokens[0], "добавить") == 0){
+	else if(strcmp(tokens[0], "добавить") == 0 || strcmp(tokens[0], "add") == 0){
 		for(size_t i = 1; i < count; i++){
 			element_add_back_next(root, tokens[i]);
 		}
 	}
-	else if(strcmp(tokens[0], "удалить") == 0 && in_index != -1){
+	else if((strcmp(tokens[0], "удалить") == 0 || strcmp(tokens[0], "rm") == 0) && in_index != -1){
 		if(in_index > 1 && in_index < count-1){
 			const char* parent = tokens[count-1];
 			for(size_t i = 1; i < in_index; i++){
@@ -399,7 +399,7 @@ void parser(struct task** root ,char** tokens, size_t count){
 			}
 		}
 	}
-	else if(strcmp(tokens[0], "удалить") == 0){
+	else if(strcmp(tokens[0], "удалить") == 0 || strcmp(tokens[0], "rm") == 0){
 		for(size_t i = 1; i < count; i++){
 		  size_t index = 0;
 			struct task* current = *root;
@@ -418,7 +418,7 @@ void parser(struct task** root ,char** tokens, size_t count){
 			}
 		}
 	}
-	if(strcmp(tokens[0], "показать") == 0 && strcmp(tokens[1], "план") == 0){
+	if((strcmp(tokens[0], "показать") == 0 || strcmp(tokens[0], "show") == 0) && (strcmp(tokens[1], "план") == 0 || strcmp(tokens[1], "plan") == 0)){
 		print_tree(*root, (size_t)0);		
 		return;
 	}
@@ -467,7 +467,7 @@ void start(){
 		}
 		if(count == 0){
 			continue;	
-		}else if(count == 1 && strcmp(tokens[0], "выход") == 0){
+		}else if(count == 1 && (strcmp(tokens[0], "выход") == 0 || strcmp(tokens[0], "exit") == 0)){
 			run = false;
 		}else {
 			parser(&root, tokens, count);
